@@ -54,16 +54,49 @@ async function run() {
       const results = await carDoctorCollectons.findOne(query, options);
       res.send(results);
     });
+    //bokings
+    app.get("/boking", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
 
+      const results = await bookigCollections.find(query).toArray();
+      res.send(results);
+    });
 
-    //post data booking service 
+    //post data booking service
 
-    app.post("/booking", async (req, res)=>{
-        const boking = req.body;
-        const result = await bookigCollections.insertOne(boking);
-        res.send(result);
+    app.post("/booking", async (req, res) => {
+      const boking = req.body;
+      const result = await bookigCollections.insertOne(boking);
+      res.send(result);
+    });
 
-    })
+    //updatet method----------
+
+    app.patch("/booking/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedBooking = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: updatedBooking.status,
+        },
+      };
+
+      const result = await bookigCollections.updateOne(filter, updateDoc);
+            res.send(result);
+    });
+
+    //deleted method here
+
+    app.delete("/booking/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookigCollections.deleteOne(query);
+      res.send(result);
+    });
     //------------------------------end  from here my work------------------------
 
     // Send a ping to confirm a successful connection
